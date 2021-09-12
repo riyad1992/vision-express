@@ -18,15 +18,42 @@ const showProducts = (products) => {
       <div>
     <img class="product-image" src=${image}></img>
       </div>
-      <h3>${product.title}</h3>
+      <h5>${product.title}</h5>
       <p>Category: ${product.category}</p>
-      <h2>Price: $ ${product.price}</h2>
+      <h3>Price: $ ${product.price}</h3>
+      <p>Avg Rating: ${product.rating.rate} Total of <span>${product.rating.count}</span></p>
       <button onclick="addToCart(${product.id},${product.price})" id="addToCart-btn" class="buy-now btn btn-success">add to cart</button>
-      <button id="details-btn" class="btn btn-danger">Details</button></div>
+      <button onclick="loadDetails(${product.id})" id="details-btn" class="btn btn-danger">Details</button></div>
       `;
     document.getElementById("all-products").appendChild(div);
   }
 };
+
+const loadDetails = (productId) => {
+  fetch(`https://fakestoreapi.com/products/${productId}`)
+  .then(res => res.json())
+  .then(data => showDetails(data))
+}
+
+const showDetails = (singleProduct) => {
+  const details = document.getElementById('details')
+  details.textContent = ''
+  const div = document.createElement('div')
+  div.classList.add('row')
+  div.innerHTML = `
+  <div class="col-md-4">
+    <img src="${singleProduct.image}" class="img-fluid rounded-start p-3"  alt="...">
+    <p class="p-2"><small>Avg Rating: ${singleProduct.rating.rate} Total of (<span>${singleProduct.rating.count}</span>)</small></p>
+  </div>
+  <div class="col-md-8">
+    <div class="card-body">
+      <h5 class="card-title">${singleProduct.title}</h5>
+      <p class="card-text">${singleProduct.description}</p>
+    </div>
+  </div>`
+  details.appendChild(div)
+}
+
 let count = 0;
 const addToCart = (id, price) => {
   count = count + 1;
